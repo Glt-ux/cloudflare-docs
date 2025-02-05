@@ -80,7 +80,7 @@ function docsToChangelog({
 	};
 }
 
-type GetChangelogsOptions = {
+export type GetChangelogsOptions = {
 	filter?: (entry: CollectionEntry<"changelogs-next">) => boolean;
 };
 
