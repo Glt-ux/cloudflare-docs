@@ -72,8 +72,7 @@ let durableObjectStub = OBJECT_NAMESPACE.get(id, { locationHint: "enam" });
 ```
 
 :::caution
-
-Hints are a best effort and not a guarantee. Unlike with jurisdictions, Durable Objects will not necessarily be instantiated in the hinted location, but instead instantiated in a data center selected to minimize latency from the hinted location.
+If the location hint cannot be respected when creating a Durable Object, the Durable Object creation will fail. 
 :::
 
 ### Supported locations
