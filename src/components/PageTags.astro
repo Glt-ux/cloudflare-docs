@@ -25,7 +25,7 @@ const { tags } = props.parse(Astro.props);
 			<strong>Page tags:</strong>
 			{tags.map((tag) => (
 				<a href={`/search/?tag=${tag}`} class="no-underline">
-					<Badge text={tag} variant="tip" />
+					<Badge text={tag} />
 				</a>
 			))}
 		</div>
