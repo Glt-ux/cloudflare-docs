@@ -21,7 +21,9 @@ export type GetChangelogsOptions = {
 export async function getChangelogs({
 	filter,
 }: GetChangelogsOptions): Promise<Array<CollectionEntry<"changelog">>> {
-	let entries = await getCollection("changelog");
+	let entries = await getCollection('changelog', ({ data }) => {
+		return !data.hidden === true;
+	});
 
 	if (filter) {
 		entries = entries.filter((e) => filter(e));
