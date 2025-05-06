@@ -69,3 +69,33 @@ const model = genAI.getGenerativeModel(
 
 await model.generateContent(["What is Cloudflare?"]);
 ```
+
+### Use OpenAI SDK with JavaScript
+
+If you are using the OpenAI SDK with JavaScript, you can set your endpoint like this:
+
+```js title="JavaScript"
+import OpenAI from "openai";const apiKey = "my api key"; // or process.env["GOOGLE_AI_STUDIO_API_KEY"]
+const accountId = "{account_id}";
+const gatewayId = "{gateway_id}";
+const baseURL = `https://gateway.ai.cloudflare.com/v1/${accountId}/${gatewayId}/google-ai-studio/v1beta/openai`;
+const openai = new OpenAI({
+  apiKey,
+  baseURL,
+});
+
+try {
+  const model = "gemini-2.0-flash";
+  const messages = [{ role: "user", content: "What is a neuron?" }];
+  const maxTokens = 100;
+  const chatCompletion = await openai.chat.completions.create({
+    model,
+    messages,
+    max_tokens: maxTokens,
+  });
+  const response = chatCompletion.choices[0].message;
+  console.log(response);
+} catch (e) {
+  console.error(e);
+} 
+```
