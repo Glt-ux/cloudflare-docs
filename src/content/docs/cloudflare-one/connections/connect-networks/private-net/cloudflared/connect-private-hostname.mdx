@@ -82,7 +82,7 @@ To route your internal DNS resolver through Cloudflare Tunnel:
 
 Configure Gateway to resolve the private hostname using your internal DNS resolver:
 
-1. [Create a Gateway resolver policy](cloudflare-one/policies/gateway/resolver-policies/#create-a-resolver-policy) that matches the following traffic:
+1. [Create a Gateway resolver policy](/cloudflare-one/policies/gateway/resolver-policies/#create-a-resolver-policy) that matches the private hostname for which you are establishing the route:
 
    | Selector | Operator | Value                  |
    | -------- | -------- | ---------------------- |
@@ -115,7 +115,7 @@ Configure Gateway to resolve the private hostname using your internal DNS resolv
 
 ### 5. Route traffic through WARP
 
-In your [device profiles]((/cloudflare-one/connections/connect-devices/warp/configure-warp/device-profiles/)), [configure Split Tunnels](cloudflare-one/connections/connect-devices/warp/configure-warp/route-traffic/split-tunnels/) so that the following IPs route through the WARP tunnel:
+In your [device profiles](/cloudflare-one/connections/connect-devices/warp/configure-warp/device-profiles/), [configure Split Tunnels](/cloudflare-one/connections/connect-devices/warp/configure-warp/route-traffic/split-tunnels/) so that the following IPs route through the WARP tunnel:
 
 - Initial resolved IP CGNAT range: `100.80.0.0/16`
 - Private network CIDR where the application is located (for example, `10.0.0.0/8`)
