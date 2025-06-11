@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - production
+      - release
 
 jobs:
   publish:
