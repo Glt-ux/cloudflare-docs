@@ -3,12 +3,10 @@ import { z } from "astro:schema";
 
 type Props = z.infer<typeof props>;
 
-const props = z
-	.object({
-		id: z.string(),
-		title: z.string().optional(),
-	})
-	.strict();
+const props = z.object({
+	id: z.string(),
+	title: z.string().optional(),
+});
 
 let { id, title } = props.parse(Astro.props);
 

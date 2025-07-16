@@ -1,0 +1,203 @@
+---
+import StarlightPage, {
+	type StarlightPageProps,
+} from "@astrojs/starlight/components/StarlightPage.astro";
+
+import { Icon } from "@astrojs/starlight/components";
+import { Image } from "astro:assets";
+
+import Templates from "~/assets/images/developer-platform/templates.png";
+import Playground from "~/assets/images/developer-platform/playground.png";
+import { YouTube } from "~/components";
+
+const props = {
+	frontmatter: {
+		title: "Developer platform",
+		description:
+			"The Cloudflare Developer platform is a collection of tools and services that help you build and deploy web applications.",
+		template: "splash",
+	},
+	hideTitle: true,
+	hideBreadcrumbs: true,
+} as StarlightPageProps;
+
+const sections = [
+	{
+		header: "Compute",
+		products: ["workers", "workflows", "browser-rendering"],
+	},
+	{
+		header: "Storage & databases",
+		products: ["d1", "r2", "durable-objects", "hyperdrive", "kv", "queues"],
+	},
+	{
+		header: "AI",
+		products: ["agents", "workers-ai", "ai-gateway"],
+	},
+	{
+		header: "Media & real-time",
+		products: ["images", "stream", "calls"],
+	},
+];
+
+const cards = [
+	{
+		text: "Start with a full-stack application template",
+		image: Templates,
+		link: {
+			text: "View templates in the dashboard",
+			href: "/todo/",
+		},
+	},
+	{
+		text: "Test drive Workers in a playground environment",
+		image: Playground,
+		link: {
+			text: "Try the playground",
+			href: "/todo/",
+		},
+	},
+];
+
+const socials = [
+	{
+		title: "Cloudflare GitHub",
+		icon: "github",
+		href: "https://github.com/cloudflare/",
+	},
+	{
+		title: "X @CloudflareDev",
+		icon: "x.com",
+		href: "https://x.com/CloudflareDev",
+	},
+	{
+		title: "Cloudflare Developers Discord",
+		icon: "discord",
+		href: "https://discord.gg/cloudflaredev",
+	},
+] as const;
+---
+
+<StarlightPage {...props}>
+	<div class="grid grid-cols-2 gap-4">
+		<div>
+			<h1>Developer Platform</h1>
+			<p>
+				A serverless platform to build, deploy, and scale apps globally with a
+				single command — no infrastructure management or complex configuration
+				needed.
+			</p>
+		</div>
+	</div>
+	<h2>Explore Developer Platform Products</h2>
+	{
+		sections.map((section) => (
+			<div>
+				<div class="flex items-center justify-between">
+					<h3>{section.header}</h3>
+					<a class="block" href="/">
+						View all {section.header} products
+					</a>
+				</div>
+				<div class="grid grid-cols-3 gap-4">
+					{section.products.map((product) => (
+						<a
+							href={`/${product}/`}
+							class="rounded-md border border-solid border-gray-200 p-6 text-inherit no-underline hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+						>
+							{product}
+						</a>
+					))}
+				</div>
+			</div>
+		))
+	}
+	<div>
+		<div class="flex items-center justify-between">
+			<h2>Build applications with Cloudflare</h2>
+			<a class="block" href="/workers/">Learn more about Workers</a>
+		</div>
+		<div class="grid grid-cols-2 gap-4">
+			{
+				cards.map((card) => (
+					<div class="flex flex-col items-center justify-center gap-4 rounded-sm border border-solid border-gray-200 p-6 text-center dark:border-gray-700">
+						<Image src={card.image} alt={card.text} />
+						<p>{card.text}</p>
+						<a
+							href={card.link.href}
+							class="border-cl1-brand-orange rounded-sm border px-6 py-2 text-black no-underline"
+						>
+							{card.link.text}
+						</a>
+					</div>
+				))
+			}
+		</div>
+	</div>
+	<div>
+		<div class="flex items-center justify-between">
+			<h2>Learn more</h2>
+			<a class="block" href="https://www.youtube.com/@CloudflareDevelopers"
+				>View more on YouTube</a
+			>
+		</div>
+		<div class="grid grid-cols-2 gap-4">
+			<YouTube id="FH5-m0aiO5g" />
+			<div>
+				<p><strong>The Cloudflare Stack</strong></p>
+				<p>
+					Take a tour of the Cloudflare Developer Platform in building blocks.
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="flex flex-col items-center justify-center gap-10">
+		<h2>Developer Platform changelog</h2>
+		<div class="rounded-sm border border-gray-200 p-4">
+			<p>foo</p>
+		</div>
+		<a href="/">See what else we're building</a>
+	</div>
+	<div class="flex flex-col items-center justify-center">
+		<h2>Reach out to our communities</h2>
+		<div class="grid grid-cols-3 gap-4">
+			{
+				socials.map((social) => (
+					<a
+						href={social.href}
+						class="flex w-full items-center justify-center gap-2 text-black no-underline"
+					>
+						<Icon name={social.icon} />
+						{social.title}
+					</a>
+				))
+			}
+		</div>
+	</div>
+</StarlightPage>
+
+<style>
+	:root {
+		.sl-container {
+			--sl-content-width: 70rem !important;
+			margin-inline: auto !important;
+		}
+
+		.sl-markdown-content {
+			margin-top: 0px !important;
+		}
+
+		.content-panel {
+			padding-top: 0 !important;
+			overflow-x: hidden;
+		}
+
+		.feedback-prompt-content {
+			display: none !important;
+		}
+
+		#footer-links {
+			justify-content: center;
+		}
+	}
+</style>
