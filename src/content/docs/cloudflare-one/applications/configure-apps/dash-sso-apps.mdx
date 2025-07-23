@@ -214,3 +214,15 @@ curl --request PATCH \
 ```
 
 Users can now log in using their Cloudflare account email and password. To re-enable SSO, send a `PATCH` request with `"sso_connector_status" : "V"`.
+
+## Change a team name
+
+To change a team domain name: 
+
+1. In [Zero Trust](https://one.dash.cloudflare.com/), go to **Settings** > **Authentication**.
+2. From **Cloudflare dashboard SSO**, if SSO is enabled, disable it by setting the switcher to **Off**.
+3. Go to **Settings** > **Custom Pages**.
+4. Under **Team domain**, select **Edit** to enter the new team name. Select **Save**.
+5. In your IdP settings, update the information with the new team name.
+6. In the Zero Trust, go to **Settings** > **Authentication**.
+7. From **Cloudflare dashboard SSO**, enable SSO by setting the switcher to **On**.
