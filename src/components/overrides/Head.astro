@@ -30,7 +30,14 @@ const shouldChatbotDeprioritize =
 	frontmatter.chatbot_deprioritize;
 
 if (currentSection) {
-	const product = await getEntry("products", currentSection);
+	let product = await getEntry("products", currentSection);
+
+	if (currentSection === "changelog") {
+		const products = frontmatter.products
+		if (products) {
+			product = await getEntry("products", products[0]);
+		}
+	}
 
 	if (product) {
 		if (product.data.meta.title) {
@@ -209,6 +216,7 @@ metaTags.map((attrs) => {
 		attrs,
 	});
 });
+
 ---
 
 <script src="src/scripts/footnotes.ts"></script>

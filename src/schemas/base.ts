@@ -25,6 +25,7 @@ export const baseSchema = ({ image }: SchemaContext) =>
 			.union([
 				z.literal("api"),
 				z.literal("changelog"),
+				z.literal("changelog-entry"),
 				z.literal("configuration"),
 				z.literal("concept"),
 				z.literal("design-guide"),
