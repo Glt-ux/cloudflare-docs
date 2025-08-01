@@ -66,3 +66,5 @@ If you are developing a multi-Worker application, assets can only be accessed on
 Custom [headers](/workers/static-assets/headers/) and [redirects](/workers/static-assets/redirects/) are supported at build, preview and deploy time by adding `_headers` and `_redirects` files to your [`public` directory](https://vite.dev/guide/assets#the-public-directory).
 The paths in these files should reflect the structure of your client build output.
 For example, generated assets are typically located in an [assets subdirectory](https://vite.dev/config/build-options#build-assetsdir).
+
+Vite's [`server.headers`](https://vite.dev/config/server-options#server-headers) can be used to add headers to static assets during development.
