@@ -50,7 +50,7 @@ Assuming a Durable Object does not run, the first incoming request or event (lik
 
 At this point the Durable Object is in the **active in-memory state**.
 
-If it continuously receives requests or events within 10 seconds of each other, the Durable Object will remain in this state.
+If it continuously receives requests or events within 10 seconds (the hibernation grace period) of each other, the Durable Object will remain in this state.
 
 After 10 seconds of no incoming request or events, the runtime can now hibernate the Durable Object. Hibernation will only occur if **all** of the below are true:
   - No `setTimeout`/`setInterval` scheduled callbacks are set.
@@ -74,4 +74,8 @@ Objects in the **hibernated** state keep their Websocket clients connected, and 
 
 The next incoming request or event starts the cycle again.
 
-As explained in [When does a Durable Object incur duration charges?](/durable-objects/platform/pricing/#when-does-a-durable-object-incur-duration-charges), a Durable Object incurs charges only when it is **actively running in-memory**, or when it is **idle in-memory and non-hibernateable**.
+As explained in [When does a Durable Object incur duration charges?](/durable-objects/platform/pricing/#when-does-a-durable-object-incur-duration-charges), a Durable Object incurs charges only when it is in one of the following states:
+
+- Actively running in-memory
+- Idle in-memory and non-hibernateable
+- Idle in-memory, hibernateable
