@@ -16,7 +16,7 @@ This tutorial shows you how to use Magic WAN with the following versions of the 
   - SFOS Version 19.0 MR2-Build 472
   - SFOS Version 19.5.1 MR1-Build 278
 
-You can connect through[ Generic Routing Encapsulation (GRE) or IPsec tunnels](/magic-wan/configuration/manually/how-to/configure-tunnels/) to Magic WAN.
+You can connect through[ Generic Routing Encapsulation (GRE) or IPsec tunnels](/magic-wan/configuration/manually/how-to/configure-tunnel-endpoints/) to Magic WAN.
 
 ## IPsec connection
 
@@ -31,19 +31,17 @@ The following instructions show how to setup an IPsec connection on your Sophos 
    - **Key exchange**: **IKEv2**
    - **Authentication mode**: **Main mode**
 4. In the **Phase 1** group, make sure you have the following settings:
-   - **DH group (key group)**: _14(DH2048)_
+   - **DH group (key group)**: _20_
    - **Encryption**: _AES256_
    - **Authentication**: _SHA2 256_
 5. In the **Phase 2** group, select the following:
    - **PFS group (DH group)**: _Same as phase-1_
-   - **Key life**: _3600_
+   - **Key life**: _28800_
    - **Encryption**: _AES256_
    - **Authentication**: _SHA2 256_
 6. Enable **Dead Peer Detection**.
 7. In **When peer unreachable**, select _Re-initiate_.
 8. Select **Save**.
-
-![Start by setting up an IPsec profile.](~/assets/images/magic-wan/third-party/sophos-firewall/1-ipsec-profile.png)
 
 ### 2. Create IPsec connection tunnel
 
@@ -59,7 +57,7 @@ The next step involves configuring a site-to-site IPsec VPN connection on your S
    - **Authentication type**: **Preshared key**
 5. In **Gateway settings**, make sure you have the following settings:
    - **Gateway address**: Enter your Cloudflare anycast IP address provided by Cloudflare.
-   - **Local ID type**: Add the [IKE ID](/magic-wan/reference/tunnels/#supported-ike-id-formats) provided by Cloudflare.
+   - **Local ID type**: Add the [IKE ID](/magic-wan/reference/gre-ipsec-tunnels/#supported-ike-id-formats) provided by Cloudflare.
 
 ![Configure an IPsec tunnel.](~/assets/images/magic-wan/third-party/sophos-firewall/2-ipsec-tunnel.png)
 
@@ -69,11 +67,11 @@ After setting up your IPsec tunnel, it will show up on the IPsec connections lis
 
 ### 3. Assign the XFRM interface address
 
-You must use an interface address from the `/31` subnet required to [configure tunnel endpoints](/magic-wan/configuration/manually/how-to/configure-tunnels/) on Magic WAN.
+You must use an interface address from the `/31` subnet required to [configure tunnel endpoints](/magic-wan/configuration/manually/how-to/configure-tunnel-endpoints/) on Magic WAN.
 
 1. Go to **Configure** > **Network**.
 2. In **Interfaces**, select the corresponding interface to the IPsec tunnel you created in [step 2](#2-create-ipsec-connection-tunnel).
-3. Edit the interface to assign an address from the `/31` subnet required to [configure tunnel endpoints](/magic-wan/configuration/manually/how-to/configure-tunnels/). When you are finished, it should look similar to the following:
+3. Edit the interface to assign an address from the `/31` subnet required to [configure tunnel endpoints](/magic-wan/configuration/manually/how-to/configure-tunnel-endpoints/). When you are finished, it should look similar to the following:
 
 ![Configure a XFRM interface.](~/assets/images/magic-wan/third-party/sophos-firewall/3-xfrm-interface.png)
 
@@ -96,7 +94,7 @@ Below are instruction on how to achieve this on SFOS version 19 and SFOS version
 2. Enter **4** to choose **Device console**, and enter the following command:
 
    ```bash
-   set vpn ipsec-performance-setting anti-replay window-size 0
+   set vpn ipsec-performance anti-replay window-size 0
    ```
 
    ![Access the CLI to disable anti-replay](~/assets/images/magic-wan/third-party/sophos-firewall/5-sfos-19.png)
@@ -187,11 +185,12 @@ system gre route add net <IP_ADDRESS> tunnelname <TUNNEL_NAME>
 ## Verify tunnel status on Cloudflare dashboard
 
 <Render
-	file="tunnel-healthchecks-dash"
+	file="tunnel-health/check-tunnel-healthchecks-dash"
+	product="networking-services"
 	params={{
-		dashInfo:
-			"The dashboard shows the view of tunnel health as measured from each Cloudflare location where your traffic is likely to land.",
+		dashInfo: "The dashboard shows the view of tunnel health as measured from each Cloudflare location where your traffic is likely to land.",
 		productPath: "**Magic WAN** > **Tunnel health**",
+		graphQL: "/magic-wan/analytics/query-tunnel-health/"
 	}}
 />
 

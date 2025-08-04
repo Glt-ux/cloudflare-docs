@@ -31,9 +31,9 @@ For more details about monitors, refer to [Monitors](/load-balancing/monitors/).
 
 Once your monitor is created, you need to attach it to a pool:
 
-1. Go to **Traffic** > **Load Balancing**.
+1. Go to **Load Balancing**.
 
-2. Select **Manage Pools**.
+2. Select the **Pools** tab.
 
 3. On a specific pool, select **Edit**.
 
@@ -69,8 +69,8 @@ Once your monitor is created, save its `id` property. Include this value in the 
 
 To edit a monitor in the dashboard:
 
-1. Go to **Traffic** > **Load Balancing**.
-2. Select **Manage Monitors**.
+1. Go to **Load Balancing**.
+2. Select **Monitors**.
 3. On a specific monitor, select **Edit**.
 4. Update settings as needed.
 5. Select **Save**.
@@ -79,7 +79,7 @@ To edit a monitor in the dashboard:
 
 When you edit a monitor with the API, your request type depends on how much you want to edit.
 
-To update specific settings without having to resubmit the entire configuration, use a [PATCH](/api/operations/account-load-balancer-monitors-patch-monitor) request. For broader changes, use a [PUT](/api/operations/account-load-balancer-monitors-update-monitor) request.
+To update specific settings without having to resubmit the entire configuration, use a [PATCH](/api/resources/load_balancers/subresources/monitors/methods/edit/) request. For broader changes, use a [PUT](/api/resources/load_balancers/subresources/monitors/methods/update/) request.
 
 </TabItem> </Tabs>
 
@@ -91,12 +91,12 @@ To update specific settings without having to resubmit the entire configuration,
 
 To delete a monitor in the dashboard:
 
-1. Go to **Traffic** > **Load Balancing**.
-2. Select **Manage Monitors**.
+1. Go to **Load Balancing**.
+2. Select the **Monitors** tab.
 3. On a specific monitor, select **Delete**.
 
 </TabItem> <TabItem label="API">
 
-To delete a monitor using the API, send a [DELETE](/api/operations/account-load-balancer-monitors-delete-monitor) request.
+To delete a monitor using the API, send a [DELETE](/api/resources/load_balancers/subresources/monitors/methods/delete/) request.
 
 </TabItem> </Tabs>

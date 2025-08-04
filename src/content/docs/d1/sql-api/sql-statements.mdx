@@ -24,7 +24,7 @@ D1 supports some [SQLite PRAGMA](https://www.sqlite.org/pragma.html) statements.
 
 - Modify the behavior of certain SQLite operations.
 - Query the SQLite library for internal data about schemas or tables (but note that PRAGMA statements cannot query the contents of a table).
-- Control environmental variables.
+- Control [environmental variables](/workers/configuration/environment-variables/).
 
 <Render file="use-pragma-statements" />
 
@@ -64,7 +64,7 @@ const { results } = await env.DB.prepare(
 	"SELECT * FROM Customers WHERE CompanyName LIKE ?",
 )
 	.bind("%eve%")
-	.all();
+	.run();
 console.log("results: ", results);
 ```
 ```js output
@@ -73,6 +73,6 @@ results:  [...]
 
 ## Related resources
 
-- Learn [how to create indexes](/d1/build-with-d1/use-indexes/#list-indexes) in D1.
-- Use D1's [JSON functions](/d1/build-with-d1/query-json/) to query JSON data.
+- Learn [how to create indexes](/d1/best-practices/use-indexes/#list-indexes) in D1.
+- Use D1's [JSON functions](/d1/sql-api/query-json/) to query JSON data.
 - Use [`wrangler dev`](/workers/wrangler/commands/#dev) to run your Worker and D1 locally and debug issues before deploying.

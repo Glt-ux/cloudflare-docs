@@ -29,10 +29,10 @@ Configure load shedding via the [dashboard](#configure-via-dashboard) or the [AP
 
 To enable load shedding for a specific pool via the dashboard:
 
-1. Go to **Traffic** > **Load Balancing**.
-2. Click **Manage Pools**.
-3. On a pool, click **Edit**.
-4. Click the **Configure Load Shedding** dropdown.
+1. Go to **Load Balancing**.
+2. Select the **Pools** tab.
+3. On a pool, select **Edit**.
+4. Open the **Configure Load Shedding** dropdown.
 5. For **Default traffic**, select a **Policy** and a **Shed %**:
 
 
@@ -58,7 +58,7 @@ When choosing a **Shed %**, start with a small percentage and increase gradually
 
 ### Configure via API
 
-To enable load shedding for a specific pool via the API, [update the values](/api/operations/account-load-balancer-pools-update-pool) for the pool's `load_shedding` object.
+To enable load shedding for a specific pool via the API, [update the values](/api/resources/load_balancers/subresources/pools/methods/update/) for the pool's `load_shedding` object.
 
 
 <Details header="Example request">

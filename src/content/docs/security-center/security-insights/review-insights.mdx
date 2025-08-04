@@ -16,6 +16,10 @@ For each detected insight, you can resolve it or archive it, after understanding
 
 ## Resolve an insight
 
+:::warning
+Insights will not be automatically removed from your dashboard when you address them. You must either manually [archive insights](#archive-insights), manually trigger another scan or wait for the automatic scan to run as per [scan frequency](/security-center/security-insights/how-it-works/#scan-frequency).
+:::
+
 In the insight details page, if you choose to update a configuration based on the recommendation actions, follow the instructions on the insight details page.
 
 The following insights follow a different yet straightforward workflow to be resolved:
@@ -29,11 +33,6 @@ The following insights follow a different yet straightforward workflow to be res
 - **Turn on JavaScript Detections**: To resolve this insight:
   - Go to **Security** > **Bots** > Select **Configure Bot Management**.
   - Select **JavaScript Detections**.
-
-## Dismiss or archive an insight
-
-1. In the insight details page, read the detailed information so that you understand the risks of dismissing the security insight.
-2. Select **Archive Insight**.
 
 ## Export insights
 
@@ -57,6 +56,11 @@ To archive insights:
 1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com) and select your account.
 2. Go to Account Home > **Security Center** > **Security Insights**.
 3. Select the insight(s) you want to archive, then select **Archive selected**.
+
+Alternatively, to archive an insight:
+
+1. Select the insight you want to archive. The dashboard will open a page where you will be able to review [insight properties](/security-center/security-insights/how-it-works/#scan-properties).
+2. Select **Archive insight**.
 
 ## Enable alerts
 

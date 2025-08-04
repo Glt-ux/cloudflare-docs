@@ -3,7 +3,7 @@ type: example
 summary: Build a WebSocket server using WebSocket Hibernation on Durable Objects
   and Workers.
 tags:
-  - Durable Objects
+  - WebSockets
 pcx_content_type: example
 title: Build a WebSocket server with WebSocket Hibernation
 sidebar:
@@ -12,6 +12,7 @@ description: Build a WebSocket server using WebSocket Hibernation on Durable
   Objects and Workers.
 ---
 
+import { TabItem, Tabs, WranglerConfig } from "~/components";
 import { TypeScriptExample, WranglerConfig } from "~/components";
 
 This example is similar to the [Build a WebSocket server](/durable-objects/examples/websocket-server/) example, but uses the WebSocket Hibernation API. The WebSocket Hibernation API should be preferred for WebSocket server applications built on Durable Objects, since it significantly decreases duration charge, and provides additional features that pair well with WebSocket applications. For more information, refer to [Use Durable Objects with WebSockets](/durable-objects/best-practices/websockets/).
@@ -50,6 +51,8 @@ export default {
 			let id = env.WEBSOCKET_HIBERNATION_SERVER.idFromName('foo');
 			let stub = env.WEBSOCKET_HIBERNATION_SERVER.get(id);
 
+			return stub.fetch(request);
+		}
 			return stub.fetch(request);
 		}
 
@@ -121,6 +124,11 @@ export class WebSocketHibernationServer extends DurableObject {
 		// Add the WebSocket connection to the map of active sessions.
 		this.sessions.set(server, { id });
 
+		return new Response(null, {
+			status: 101,
+			webSocket: client,
+		});
+	}
 		return new Response(null, {
 			status: 101,
 			webSocket: client,

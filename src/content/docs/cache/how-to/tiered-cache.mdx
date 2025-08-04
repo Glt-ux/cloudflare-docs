@@ -4,7 +4,7 @@ pcx_content_type: concept
 
 ---
 
-import { Details, FeatureTable } from "~/components"
+import { Details, FeatureTable, APIRequest } from "~/components";
 
 Tiered Cache uses the size of Cloudflare’s network to reduce requests to customer origins by dramatically increasing cache hit ratios. With data centers around the world, Cloudflare caches content very close to end users. However, if a piece of content is not in cache, the Cloudflare edge data centers must contact the origin server to receive the cacheable content.
 
@@ -21,6 +21,10 @@ Cloudflare allows you to select your cache topology so that you have control ove
 ### Smart Tiered Cache
 
 Smart Tiered Cache dynamically selects the single closest upper tier for each of your website’s origins with no configuration required, using our in-house performance and routing data. Cloudflare collects latency data for each request to an origin, and uses the latency data to determine how well any upper-tier data center is connected with an origin. As a result, Cloudflare can select the data center with the lowest latency to be the upper-tier for an origin.
+
+#### Load Balancing interaction
+
+While Smart Tiered Cache selects one Upper Tier per origin, when using Load Balancing, Smart Tiered Cache will select the single best Upper Tier for the entire Load Balancing Pool.
 
 #### Caveats
 
@@ -42,7 +46,7 @@ Regional Cache instructs Cloudflare to check a regional hub data center near the
 
 ### Custom Tiered Cache
 
-Custom Tiered cache allows you to work with Cloudflare’s support team to set a custom topology that fits your specific needs, for instance you have close upper tiers or you have an unique traffic pattern. If you want a custom topology, please contact your CSM.
+Custom Tiered cache allows Enterprise customers to work with their account team to set a custom topology that fits your specific needs, for instance you have close upper tiers or you have an unique traffic pattern. If you want a custom topology, please contact your account team.
 
 ## Availability
 
@@ -73,28 +77,26 @@ You can enable Tiered Cache in the dashboard or via API.
 
 To enable Tiered Cache via API use the following cURL example:
 
-```bash
-curl --request PATCH \
-https://api.cloudflare.com/client/v4/zones/{zone_id}/argo/tiered_caching \
---header "X-Auth-Email: <EMAIL>" \
---header "X-Auth-Key: <API_KEY>" \
---header 'Content-Type: application/json' \
---data '{ "value": "on" }'
-```
+<APIRequest
+  path="/zones/{zone_id}/argo/tiered_caching"
+  method="PATCH"
+  json={{
+    value: "on"
+  }}
+/>
 
 You can also configure Tiered Cache Topology via API, for instance:
 
 
 <Details header="Enable Smart Tiered Cache">
 
-```bash
-curl --request PATCH \
-https://api.cloudflare.com/client/v4/zones/{zone_id}/cache/tiered_cache_smart_topology_enable \
---header "X-Auth-Email: <EMAIL>" \
---header "X-Auth-Key: <API_KEY>" \
---header "Content-Type: application/json" \
---data '{ "value": "on" }'
-```
+<APIRequest
+  path="/zones/{zone_id}/cache/tiered_cache_smart_topology_enable"
+  method="PATCH"
+  json={{
+    value: "on"
+  }}
+/>
 
 
 </Details>
@@ -102,19 +104,17 @@ https://api.cloudflare.com/client/v4/zones/{zone_id}/cache/tiered_cache_smart_to
 
 <Details header="Enable Regional Tiered Cache">
 
-```bash
-curl --request PATCH \
-https://api.cloudflare.com/client/v4/zones/{zone_id}/cache/regional_tiered_cache \
---header "X-Auth-Email: <EMAIL>" \
---header "X-Auth-Key: <API_KEY>" \
---header 'Content-Type: application/json' \
---data '{ "value": "on" }'
-```
-
+<APIRequest
+  path="/zones/{zone_id}/cache/regional_tiered_cache"
+  method="PATCH"
+  json={{
+    value: "on"
+  }}
+/>
 
 </Details>
 
-For more API examples and configuration options for Tiered Cache, refer to the [API documentation](/api/operations/tiered-caching-get-tiered-caching-setting).
+For more API examples and configuration options for Tiered Cache, refer to the [API documentation](/api/resources/argo/subresources/tiered_caching/methods/get/).
 
 :::note
 
