@@ -1,245 +1,415 @@
 ---
-title: Client-side rendering
+title: Embed the widget
 pcx_content_type: get-started
 sidebar:
   order: 2
 ---
 
-import { Render } from "~/components";
+import { Render, Tabs, TabItem, Steps, Details } from "~/components";
 
-You can initialize and customize the Turnstile widget on your web page via implicit or explicit rendering.
+Learn how to add the Turnstile widget to your webpage using implicit or explicit rendering methods.
 
-:::caution
+## Prerequisites
 
-`api.js` must be fetched from the exact URL stated below. Proxying or caching this file will result in Turnstile failing when future updates are released.
-:::
+Before you begin, you must have:
 
-## Implicitly render the Turnstile widget
+- A Cloudflare account
+- [Created A Turnstile widget](/turnstile/get-started/#1-create-your-widget) and obtained a sitekey
+- Access to edit your website's HTML
+- Basic knowledge of HTML and JavaScript
 
-:::note
+## Process
 
-Refer to the [demo](https://demo.turnstile.workers.dev/) and its [source code](https://github.com/cloudflare/turnstile-demo-workers/blob/main/src/implicit.html).
-:::
+1. **Page load**: The Turnstile script loads and scans for elements or waits for programmatic calls.
+2. **Widget rendering**: Widgets are created and begin running challenges.
+3. **Token generation**: When a challenge is completed, a token is generated. 
+4. **Form integration**: The token is made available via callbacks or hidden form fields.
+5. **Server validation**: Your server receives the token and validates it using the Siteverify API.
 
-The HTML is scanned for elements that have a `cf-turnstile` class name:
+## Implicit rendering
 
-<div>
+Implicit rendering automatically scans your HTML for elements with the `cf-turnstile` class and renders widgets when the page loads.
 
-```html
-<div
-	class="cf-turnstile"
-	data-sitekey="yourSitekey"
-	data-callback="javascriptCallback"
-></div>
+### Use cases
+
+Cloudflare recommends using implicit rendering on the following scenarios:
+
+- If you have simple implementations and want a quick integration
+- If you have static websites with straightforward forms
+- If you want widgets to appear immediately on pageload
+- If you do not need programmatic control of the widget
+
+### Implementation
+
+#### 1. Add the Turnstile script
+
+Add the Turnstile JavaScript API to your HTML.
+
+```html wrap
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 ```
 
-</div>
-
-Once a challenge has been solved, a token is passed to the success callback. This token must be validated against the Siteverify API. A token can only be validated once and cannot be consumed twice.
-
-<Render file="siteverify-warning" />
-
-:::note
-
-Once a token has been issued, it can be validated within the next 300 seconds. After 300 seconds, the token is no longer valid and another challenge needs to be solved.
+:::caution
+The `api.js` file must be fetched from the exact URL shown above. Proxying or caching this file will cause Turnstile to fail when future updates are released.
 :::
 
-To configure the challenge, refer to [Configurations](/turnstile/get-started/client-side-rendering/#configurations) containing data attributes and render parameters.
+#### 2. Add widget elements
 
-### Protect forms
+Add widget containers where you want the challenges to appear on your website.
 
-Turnstile is often used to protect forms on websites such as login forms, contact forms, and more. After inserting the JavaScript script tag, you can embed `<div class="cf-turnstile"></div>` into your site to protect your forms.
+```html wrap
+<div class="cf-turnstile" data-sitekey="<YOUR-SITE-KEY>"></div>
+```
 
-<div>
+#### 3. Configure with data attributes
 
-```html title="Example" {4}
-<form action="/login" method="POST">
-	<input type="text" placeholder="username" />
-	<input type="password" placeholder="password" />
-	<div class="cf-turnstile" data-sitekey="<YOUR_SITE_KEY>"></div>
-	<button type="submit" value="Submit">Log in</button>
+[Customize your widgets](/turnstile/get-started/widget-management/widget-configurations/) using data attributes.
+
+```html
+<div class="cf-turnstile" 
+    data-sitekey="<YOUR-SITE-KEY>"
+    data-theme="light"
+    data-size="normal"
+    data-callback="onSuccess">
+</div>
+```
+
+### Complete implicit rendering examples by use case
+
+<Details header="Basic login form">
+```html title="Example"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+    <form action="/login" method="POST">
+        <input type="text" name="username" placeholder="Username" required />
+        <input type="password" name="password" placeholder="Password" required />
+        
+        <!-- Turnstile widget with basic configuration -->
+        <div class="cf-turnstile" data-sitekey="<YOUR-SITE-KEY>"></div>
+        <button type="submit">Log in</button>
+    </form>
+</body>
+</html>
+```
+</Details>
+
+<Details header="Advanced form with callbacks">
+
+```html title="Example"
+
+<form action="/contact" method="POST" id="contact-form">
+    <input type="email" name="email" placeholder="Email" required />
+    <textarea name="message" placeholder="Message" required></textarea>
+<!-- Widget with callbacks and custom configuration -->
+    <div class="cf-turnstile" 
+         data-sitekey="<YOUR-SITE-KEY>"
+         data-theme="auto"
+         data-size="flexible"
+         data-callback="onTurnstileSuccess"
+         data-error-callback="onTurnstileError"
+         data-expired-callback="onTurnstileExpired"></div>
+    <button type="submit" id="submit-btn" disabled>Send Message</button>
+</form>
+
+<script>
+function onTurnstileSuccess(token) {
+    console.log('Turnstile success:', token);
+    document.getElementById('submit-btn').disabled = false;
+}
+function onTurnstileError(errorCode) {
+    console.error('Turnstile error:', errorCode);
+    document.getElementById('submit-btn').disabled = true;
+}
+function onTurnstileExpired() {
+    console.warn('Turnstile token expired');
+    document.getElementById('submit-btn').disabled = true;
+}
+</script>
+```
+</Details>
+
+<Details header="Multiple widgets with different configurations">
+
+```html title="Example"
+<!-- Compact widget for newsletter signup -->
+<form action="/newsletter" method="POST">
+    <input type="email" name="email" placeholder="Email" />
+    <div class="cf-turnstile" 
+         data-sitekey="<YOUR-SITE-KEY>"
+         data-size="compact"
+         data-action="newsletter"></div>
+    <button type="submit">Subscribe</button>
+</form>
+
+<!-- Normal widget for contact form -->
+<form action="/contact" method="POST">
+    <input type="text" name="name" placeholder="Name" />
+    <input type="email" name="email" placeholder="Email" />
+    <textarea name="message" placeholder="Message"></textarea>
+    <div class="cf-turnstile" 
+         data-sitekey="<YOUR-SITE-KEY>"
+         data-action="contact"
+         data-theme="dark"></div>
+    <button type="submit">Send</button>
+</form>
+```
+</Details>
+
+### Automatic form integration
+
+When you embed a Turnstile widget inside a `<form>` element, an invisible input field with the name `cf-turnstile-response` is automatically created. This field contains the verification token and gets submitted with your other form data.
+
+```html
+<form action="/submit" method="POST">
+    <input type="text" name="data" />
+    <div class="cf-turnstile" data-sitekey="<YOUR-SITE-KEY>"></div>
+    <!-- Hidden field automatically added: -->
+    <!-- <input type="hidden" name="cf-turnstile-response" value="TOKEN_VALUE" /> -->
+    <button type="submit">Submit</button>
 </form>
 ```
 
-</div>
+---
 
-An invisible input with the name `cf-turnstile-response` is added and will be sent to the server with the other fields.
+## Explicit rendering
 
-:::note
+Explicit rendering gives you programmatic control over when and how widgets are created using JavaScript functions.
 
-A form is not protected by having a widget rendered. The corresponding token that is a result of a widget being rendered also needs to be verified using the Siteverify API.
-:::
+### Use cases
 
-### Disable implicit rendering
+Cloudflare recommends using explicit rendering on the following scenarios:
 
-You can disable implicit rendering by replacing the script from:
+- If you have dynamic websites and single-page applications (SPAs)
+- If you need to control the timing of widget creation
+- If you want to conditionally render the widget based on visitor interactions
+- If you want multiple widgets with different configurations
+- If you have complex applications requiring widget lifecycle management
 
-```txt
-https://challenges.cloudflare.com/turnstile/v0/api.js
+### Implementation
+
+#### 1. Add the script with explicit rendering
+
+```html wrap
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 ```
 
-To:
+#### 2. Create container elements
 
-```txt
-https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit
+Create containers without the `cf-turnstile` class.
+
+```html
+<div id="turnstile-container"></div>
 ```
 
-When using `render=explicit`, HTML elements with the `cf-turnstile` class will not show a challenge. The `turnstile.render` function must be invoked using the following steps. To combine `?render=explicit` and `&onload=onloadTurnstileCallback`, pass a query string of `?render=explicit&onload=onloadTurnstileCallback`:
+#### 3. Render the widgets programmatically
 
-```txt
-https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onloadTurnstileCallback
-```
+Call `turnstile.render() when you are ready to create the widget.
 
-## Explicitly render the Turnstile widget
-
-:::note
-
-Refer to the [demo](https://demo.turnstile.workers.dev/explicit) and its [source code](https://github.com/cloudflare/turnstile-demo-workers/blob/main/src/explicit.html).
-:::
-
-1. Insert the JavaScript tag and the related code below. Ensure that you have renamed the class name of `.cf-turnstile` to `#example-container` (if you do not set the `render=explicit` query string option as shown above, it will still render otherwise). Once the script is embedded, you will have access to a global function with multiple callback options you can customize. For the following function to work properly, the page must contain an HTML element with ID `example-container`.
-
-<div>
-
-```html title="JavaScript tag"
-<script
-	src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback"
-	defer
-></script>
-```
-
-</div>
-
-<div>
-
-```javascript title="Related code"
-window.onloadTurnstileCallback = function () {
-	turnstile.render("#example-container", {
-		sitekey: "<YOUR_SITE_KEY>",
-		callback: function (token) {
-			console.log(`Challenge Success ${token}`);
-		},
-	});
-};
-```
-
-</div>
-
-Or:
-
-<div>
-
-```html title="JavaScript tag"
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
-```
-
-</div>
-
-<div>
-
-```javascript title="Related code"
-// if using synchronous loading, will be called once the DOM is ready
-turnstile.ready(function () {
-	turnstile.render("#example-container", {
-		sitekey: "<YOUR_SITE_KEY>",
-		callback: function (token) {
-			console.log(`Challenge Success ${token}`);
-		},
-	});
+```js
+const widgetId = turnstile.render('#turnstile-container', {
+    sitekey: '<YOUR-SITE-KEY>',
+    callback: function(token) {
+        console.log('Success:', token);
+    }
 });
 ```
 
-</div>
+### Complete explicit rendering examples by use case
 
-Turnstile can be programmatically loaded by invoking the `turnstile.render()` function in the global `window` object.
+<Details header="Basic explicit implementation">
 
-The `turnstile.render: function (container: string | HTMLElement, params: RenderParameters)` render takes an argument to a HTML widget.
+```html title="Example"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Explicit Rendering</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+</head>
+<body>
+    <form id="login-form">
+        <input type="text" name="username" placeholder="Username" />
+        <input type="password" name="password" placeholder="Password" />
+        <div id="turnstile-widget"></div>
+        <button type="submit">Login</button>
+    </form>
 
-If the invocation is successful, the function returns a `widgetId (string)`. If the invocation is unsuccessful, the function returns `undefined`.
+    <script>
+    window.onload = function() {
+        turnstile.render('#turnstile-widget', {
+            sitekey: '<YOUR-SITE-KEY>',
+            callback: function(token) {
+                console.log('Turnstile token:', token);
+                // Handle successful verification
+            },
+            'error-callback': function(errorCode) {
+                console.error('Turnstile error:', errorCode);
+            }
+        });
+    };
+    </script>
+</body>
+</html>
+```
+</Details>
 
-## Access a widget's state
+<Details header="Using onload callback">
 
-In addition to the `render()` function, Turnstile supports obtaining the widget's response from a `widgetId` via the `turnstile.getResponse(widgetId: string)` function. If you omit the `widgetId`, `turnstile.getResponse()` returns the response from the last created widget.
+```html title="Example"
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" defer></script>
+<div id="widget-container"></div>
+<script>
+function onTurnstileLoad() {
+    turnstile.render('#widget-container', {
+        sitekey: '<YOUR-SITE-KEY>',
+        theme: 'light',
+        callback: function(token) {
+            console.log('Challenge completed:', token);
+        }
+    });
+}
+</script>
+```
+</Details>
 
-After some time, a widget may become expired and needs to be refreshed (by calling `turnstile.reset(widgetId: string)`). If a widget has expired, `turnstile.getResponse()` will still return the last response, but the response will no longer be valid because it has expired.
+<Details header="Advanced SPA implementation">
 
-You can check if a widget has expired by either subscribing to the `expired-callback` or using the `turnstile.isExpired(widgetId: string)` function, which returns `true` if the widget is expired. If you omit `widgetId`, `turnstile.isExpired()` returns whether the last created widget is expired or not.
+```html title="Example"
+<div id="dynamic-form-container"></div>
 
-## Reset a widget
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 
-If a given widget has timed out, expired or needs to be reloaded, you can use the `turnstile.reset(widgetId: string)` function to reset the widget.
+<script>
+class TurnstileManager {
+    constructor() {
+        this.widgets = new Map();
+    }
+    createWidget(containerId, config) {
+        // Wait for Turnstile to be ready
+        turnstile.ready(() => {
+            const widgetId = turnstile.render(containerId, {
+                sitekey: config.sitekey,
+                theme: config.theme || 'auto',
+                size: config.size || 'normal',
+                callback: (token) => {
+                    console.log(`Widget ${widgetId} completed:`, token);
+                    if (config.onSuccess) config.onSuccess(token, widgetId);
+                },
+                'error-callback': (error) => {
+                    console.error(`Widget ${widgetId} error:`, error);
+                    if (config.onError) config.onError(error, widgetId);
+                }
+            });
+            
+            this.widgets.set(containerId, widgetId);
+            return widgetId;
+        });
+    }
+    removeWidget(containerId) {
+        const widgetId = this.widgets.get(containerId);
+        if (widgetId) {
+            turnstile.remove(widgetId);
+            this.widgets.delete(containerId);
+        }
+    }
+    resetWidget(containerId) {
+        const widgetId = this.widgets.get(containerId);
+        if (widgetId) {
+            turnstile.reset(widgetId);
+        }
+    }
+}
 
-## Remove a widget
+// Usage
+const manager = new TurnstileManager();
 
-Once a widget is no longer needed, it can be removed from the page using `turnstile.remove(widgetId: string)`. This will not call any callback and will remove all related DOM elements.
+// Create a widget when user clicks a button
+document.getElementById('show-form-btn').addEventListener('click', () => {
+    document.getElementById('dynamic-form-container').innerHTML = `
+        <form>
+            <input type="email" placeholder="Email" />
+            <div id="turnstile-widget"></div>
+            <button type="submit">Submit</button>
+        </form>
+    `;
+    manager.createWidget('#turnstile-widget', {
+        sitekey: '<YOUR-SITE-KEY>',
+        theme: 'dark',
+        onSuccess: (token) => {
+            // Handle successful verification
+            console.log('Form ready for submission');
+        }
+    });
+});
+</script>
+```
+</Details>
 
-To unmount Turnstile, `turnstile.render()` will return an ID which you can pass to `turnstile.remove()`.
+### Widget lifecycle management
 
-## Refresh an expired token
+Explicit rendering provides full control over the widget lifecycle.
 
-A few seconds before a token expires, the `expired-callback` is invoked.
+```js
+// Render a widget
+const widgetId = turnstile.render('#container', {
+    sitekey: '<YOUR-SITE-KEY>',
+    callback: handleSuccess
+});
 
-The `refresh-expired` or `data-refresh-expired` parameter defines the behavior when the token of a Turnstile widget has expired.
+// Get the current token
+const token = turnstile.getResponse(widgetId);
 
-By default, the parameter is set to `auto`, which will automatically instruct Turnstile to obtain a new token by rerunning the challenge. After the challenge is solved again, the `callback`, if specified, is invoked with the new token.
+// Check if widget is expired
+const isExpired = turnstile.isExpired(widgetId);
 
-The visitor can also be instructed to manually obtain a new token by setting the `refresh-expired` parameter to `manual`.
+// Reset the widget (clears current state)
+turnstile.reset(widgetId);
 
-Additionally, specifying `never` will not result in a regeneration of a token, and the application using Turnstile will be responsible for obtaining a novel Turnstile token.
-
-## Refresh a timed-out widget
-
-When managed mode is chosen, Turnstile may present the visitor with an interactive challenge at times. If this interactive challenge is presented but was not solved within a given time period, it will time out and Turnstile's challenge process will need to be restarted.
-
-The `refresh-timeout` or `data-refresh-timeout` parameter defines the behavior when the interactive challenge encounters a timeout. By default, the widget automatically refreshes (`auto`). However, the widget can also be configured such that the visitor needs to manually refresh a timed-out widget (`manual`), or the widget can only refreshed externally (`refresh-timeout="never"`) by the application (e.g. by calling Turnstile's `reset()` function).
-
-When a widget is encountering the interactivity timeout the `timeout-callback` is invoked.
-
-## Execution modes
-
-By default, Turnstile tokens are obtained for a visitor upon the rendering of a widget (even in invisible mode). However, in some scenarios, an application may want to embed Turnstile, but defer running the challenge until a certain point in time. This is where execution mode can be used to control when a challenge runs and a token is being generated.
-
-There are two options:
-
-- The challenge runs automatically after calling the `render()` function.
-- The challenge runs after the `render()` function has been called, by invoking the `turnstile.execute(container: string | HTMLElement, jsParams?: RenderParameters)` function separately.
-
-  This detaches the appearance and rendering of a widget from its execution.
-
-## Appearance modes
-
-If a widget is visible, its appearance can be controlled via the `appearance` parameter in three different ways:
-
-| <div style="width:150px">Mode</div> | Description |
-| --- | --- |
-| `always` <br />(Default) | `appearance` is set to `always` for visible widget types. |
-| `interaction-only` | The widget will become visible in cases where an interaction is required. |
-| `execute` | The widget will become visible after the challenge begins. This is helpful in situations where `execute()` is called after `render()`. |
-
-Refer to [Widget types](/turnstile/concepts/widget/) to see widgets by type and state.
-
-## Widget size
-
-The Turnstile widget can have two different fixed sizes or a flexible width size when using the Managed or Non-interactive modes:
-
-<Render file="widget-size" />
-
-```html title="Flexible width example"
-<div style="display: block; flex-flow: row;">
-	<div
-		class="cf-turnstile"
-		data-sitekey="1x00000000000000000000AA"
-		data-size="flexible"
-	></div>
-</div>
+// Remove the widget completely
+turnstile.remove(widgetId);
 ```
 
-```html title="Compact mode example"
-<div style="display: block; flex-flow: row;">
-	<div
-		class="cf-turnstile"
-		data-sitekey="1x00000000000000000000AA"
-		data-size="compact"
-	></div>
-</div>
+### Execution mode
+
+Control when challenges run with execution modes.
+
+```js
+// Render widget but don't run challenge yet
+const widgetId = turnstile.render('#container', {
+    sitekey: '<YOUR-SITE-KEY>',
+    execution: 'execute'  // Don't auto-execute
+});
+
+// Later, run the challenge when needed
+turnstile.execute('#container');
 ```
+
+---
+
+## Configuration options
+
+Both implicit and explicit rendering methods support the same configuration options. Refer to the table below for the most commonly used configurations.
+
+| Option | Description | Values |
+| --- | --- | --- |
+| `sitekey` | Your widget's sitekey | Required string |
+| `theme` | Visual theme | `auto`, `light`, `dark` |
+| `size` | Widget size | `normal`, `flexible`, `compact` |
+| `callback` | Success callback | Function |
+| `error-callback` | Error callback | Function |
+| `execution` | WHen to run the challenge | `render`, `execute` |
+| `appearance` | When the widget is visible | `always`, `execute`, `interaction-only` |
+
+For a complete list of configuration options, refer to [Widget configurations](/turnstile/get-started/widget-management/widget-configurations/).
+
+---
+
+## Security requirements
+
+- Server-side validation is critical. The client-side widget alone does not provide security. You must validate tokens on your server using the Siteverify API. The token could be invalid, forged, expired (tokens expire after 5 minutes), or already redeemed (tokens can only be used once).
+
+- Tokens are created when challenges are completed. Tokens expire after 300 seconds (5 minutes). Each token can only be validated once. By default, expired tokens are automatically refreshed. 

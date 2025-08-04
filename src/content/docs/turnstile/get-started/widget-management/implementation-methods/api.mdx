@@ -4,3 +4,36 @@ pcx_content_type: how-to
 sidebar:
     order: 2
 ---
+
+import { APIRequest } from "~/components"
+
+Use the [Cloudflare API](/api/) for programmatic widget management and automation.
+
+## Prerequisites
+
+- A **Cloudflare API token**: Create a token with `Account:Turnstile:Edit` permissions.
+- An **account ID**: Found in your Cloudflare dashboard.
+
+### Create a widget via the API
+
+<APIRequest
+  path="/accounts/{account_id}/challenges/widgets"
+  method="POST"
+  json={{
+    domains: ["example.com"],
+    mode: "managed",
+    name: "My Example Turnstile Widget",
+  }}
+/>
+
+### Manage widgets via the API
+
+<APIRequest
+  path="/accounts/{account_id}/challenges/widgets"
+  method="GET"
+/>
+
+<APIRequest
+  path="/accounts/{account_id}/challenges/widgets/{sitekey}"
+  method="GET"
+/>
