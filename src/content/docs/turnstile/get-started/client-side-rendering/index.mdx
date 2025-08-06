@@ -160,7 +160,7 @@ function onTurnstileExpired() {
 ```
 </Details>
 
-### Automatic form integration
+<Details header="Automatic form integration">
 
 When you embed a Turnstile widget inside a `<form>` element, an invisible input field with the name `cf-turnstile-response` is automatically created. This field contains the verification token and gets submitted with your other form data.
 
@@ -173,6 +173,7 @@ When you embed a Turnstile widget inside a `<form>` element, an invisible input 
     <button type="submit">Submit</button>
 </form>
 ```
+</Details>
 
 ---
 
@@ -192,7 +193,7 @@ Cloudflare recommends using explicit rendering on the following scenarios:
 
 ### Implementation
 
-#### 1. Add the script with explicit rendering
+#### 1. Add the script to your website with explicit rendering
 
 ```html wrap
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>

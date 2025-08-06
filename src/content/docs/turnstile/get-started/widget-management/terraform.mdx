@@ -1,0 +1,53 @@
+---
+title: Terraform
+pcx_content_type: how-to
+sidebar:
+    order: 3
+---
+
+import { Render } from "~/components"
+
+Manage Turnstile widgets as code using Terraform for version control and automated deployments.
+
+## Prerequisites
+
+Before you begin, you must have:
+
+- Terraform installed. Download from [terraform.io](https://terraform.io/)
+- A Cloudflare API token with `Account:Turnstile:Edit permissions`
+- A `cf-terraforming` tool for importing existing widgets (optional)
+
+## Setup
+
+### 1. Configure provider
+
+Create a `main.tf` file.
+
+```tf title="cloudflare.tf"
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API Token"
+  type        = string
+  sensitive   = true
+}
+
+variable "account_id" {
+  description = "Cloudflare Account ID"
+  type        = string
+}
+```
+
+### 2. Define widgets
+
