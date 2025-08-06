@@ -486,3 +486,183 @@ if (result.valid) {
     console.log('Validation failed:', result.reason);
 }
 ```
+
+---
+
+## API response format
+
+<Tabs>
+<TabItem label="Successful response">
+```json title="Example"
+{
+  "success": true,
+  "challenge_ts": "2022-02-28T15:14:30.096Z",
+  "hostname": "example.com",
+  "error-codes": [],
+  "action": "login",
+  "cdata": "sessionid-123456789",
+  "metadata": {
+    "ephemeral_id": "x:9f78e0ed210960d7693b167e"
+  }
+}
+```
+</TabItem>
+<TabItem label="Failed response">
+```json title="Example"
+{
+  "success": false,
+  "error-codes": ["invalid-input-response"]
+}
+```
+</TabItem>
+</Tabs>
+
+### Response fields
+
+| Field | Description |
+| --- | --- |
+| `success` | Boolean indicating if validation was successful |
+| `challenge_ts` | ISO timestamp when the challenge was solved |
+| `hostname` |  Hostname where the challenge was served |
+| `error-codes` | Array of error codes (if validation failed) |
+| `action` | Custom action identifier from client-side |
+| `cdata` | Custom data payload from client-side |
+| `metadata.ephemeral_id` | Device fingerprint ID (Enterprise only) |
+
+### Error codes reference
+
+| Error code | Description | Action required |
+| --- | --- | --- |
+| `missing-input-secret` | Secret parameter not provided | Ensure secret key is included |
+| `invalid-input-secret` | Secret key is invalid or expired | Check your secret key in the Cloudflare dashboard |
+| `missing-input-response` |  Response parameter was not provided | Ensure token is included |
+| `invalid-input-response` | Token is invalid, malformed, or expired | User should retry the challenge |
+| `bad-request` | Request is malformed | Check request format and parameters |
+| `timeout-or-duplicate` | Token has already been validated | Each token can only be used once |
+| `internal-error`  | Internal error occurred | Retry the request |
+
+---
+
+## Implementation
+
+``` js title="Example implementation"
+class TurnstileValidator {
+    constructor(secretKey, timeout = 10000) {
+        this.secretKey = secretKey;
+        this.timeout = timeout;
+    }
+
+    async validate(token, remoteip, options = {}) {
+        // Input validation
+        if (!token || typeof token !== 'string') {
+            return { success: false, error: 'Invalid token format' };
+        }
+
+        if (token.length > 2048) {
+            return { success: false, error: 'Token too long' };
+        }
+
+        // Prepare request
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+        try {
+            const formData = new FormData();
+            formData.append('secret', this.secretKey);
+            formData.append('response', token);
+            
+            if (remoteip) {
+                formData.append('remoteip', remoteip);
+            }
+
+            if (options.idempotencyKey) {
+                formData.append('idempotency_key', options.idempotencyKey);
+            }
+
+            const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+
+            const result = await response.json();
+
+            // Additional validation
+            if (result.success) {
+                if (options.expectedAction && result.action !== options.expectedAction) {
+                    return { 
+                        success: false, 
+                        error: 'Action mismatch',
+                        expected: options.expectedAction,
+                        received: result.action
+                    };
+                }
+
+                if (options.expectedHostname && result.hostname !== options.expectedHostname) {
+                    return { 
+                        success: false, 
+                        error: 'Hostname mismatch',
+                        expected: options.expectedHostname,
+                        received: result.hostname
+                    };
+                }
+            }
+
+            return result;
+
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                return { success: false, error: 'Validation timeout' };
+            }
+            
+            console.error('Turnstile validation error:', error);
+            return { success: false, error: 'Internal error' };
+            
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+}
+
+// Usage
+const validator = new TurnstileValidator(process.env.TURNSTILE_SECRET_KEY);
+
+const result = await validator.validate(token, remoteip, {
+    expectedAction: 'login',
+    expectedHostname: 'example.com'
+});
+
+if (result.success) {
+    // Process the request
+} else {
+    // Handle failure
+    console.log('Validation failed:', result.error);
+}
+
+```
+
+---
+
+## Best practices
+
+### Security
+
+- Store secret keys securely. Use environment variables or secure key management.
+- Validate the token on every request. Never trust client-side validation alone.
+- Check additional fields. Validate the action and hostname when specified.
+- Monitor for abuse. Log failed validations and unusual patterns.
+- Use HTTPS. Always validate over secure connections.
+
+### Performance
+
+- Set reasonable timeouts. Do not wait indefinitely for Siteverify responses.
+- Implement retry logic.
+- Cache validation results for the same token, if needed for your flow.
+- Monitor API latency. Track Siteverify response times.
+
+### Error handling
+
+- Have fallback behavior for API failures.
+- Do not expose internal error details to users.
+- Properly log errors for debugging without exposing secrets.
+- Rate limit. Protect against validation flooding.
