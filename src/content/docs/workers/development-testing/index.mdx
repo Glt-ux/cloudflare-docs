@@ -373,6 +373,7 @@ This wrapper simplifies proxy session management. It takes:
 
 - The path to your Wrangler config, or an object with remote bindings.
 - The current proxy session details (this parameter can be set to `null` or not being provided if none).
+- Potentially the auth data to use for the remote proxy session.
 
 It returns an object with the proxy session details if started or updated, or `null` if no proxy session is needed.
 
