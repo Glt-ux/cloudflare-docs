@@ -28,7 +28,7 @@ Client-side verification alone leaves major security vulnerabilities.
 
 ## Siteverify API overview
 
-```txt title="Endpoint"
+```shell title="Endpoint"
 POST https://challenges.cloudflare.com/turnstile/v0/siteverify
 ```
 
@@ -647,22 +647,22 @@ if (result.success) {
 
 ### Security
 
-- Store secret keys securely. Use environment variables or secure key management.
-- Validate the token on every request. Never trust client-side validation alone.
-- Check additional fields. Validate the action and hostname when specified.
-- Monitor for abuse. Log failed validations and unusual patterns.
-- Use HTTPS. Always validate over secure connections.
+- **Store secret keys securely**: Use environment variables or secure key management.
+- **Validate the token on every request**: Never trust client-side validation alone.
+- **Check additional fields**: Validate the action and hostname when specified.
+- **Monitor for abuse**: Log failed validations and unusual patterns.
+- **Use HTTPS**: Always validate over secure connections.
 
 ### Performance
 
-- Set reasonable timeouts. Do not wait indefinitely for Siteverify responses.
-- Implement retry logic.
-- Cache validation results for the same token, if needed for your flow.
-- Monitor API latency. Track Siteverify response times.
+- **Set reasonable timeouts**: Do not wait indefinitely for Siteverify responses.
+- Implement retry logic**: Handle temporary network issues.
+- **Cache validation results**: Cache validation results for the same token, if needed for your flow.
+- **Monitor API latency**: Track Siteverify response times.
 
 ### Error handling
 
-- Have fallback behavior for API failures.
-- Do not expose internal error details to users.
-- Properly log errors for debugging without exposing secrets.
-- Rate limit. Protect against validation flooding.
+- **Degreadation**: Have fallback behavior for API failures.
+- **User-friendly messaging**: Do not expose internal error details to users.
+- **Proper logging**: Log errors for debugging without exposing secrets.
+- **Rate limit**: Protect against validation flooding.
