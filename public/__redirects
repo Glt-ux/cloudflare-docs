@@ -1544,7 +1544,7 @@
 /turnstile/demos/ /turnstile/tutorials/ 301
 /turnstile/get-started/pre-clearance/ /cloudflare-challenges/concepts/clearance/ 301
 /turnstile/get-started/terraform/ /turnstile/get-started/widget-management/terraform/ 301
-/turnstile/glossary/ /turnstile/
+/turnstile/glossary/ /turnstile/ 301
 /turnstile/get-started/supported-browsers/ /cloudflare-challenges/reference/supported-browsers/ 301
 
 # waf
