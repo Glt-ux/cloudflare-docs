@@ -85,6 +85,7 @@ resource "cloudflare_workers_script" "my_worker" {
   script_name      = "my_worker"
   content_file     = "worker.py"
   content_sha256   = filesha256("worker.py")
+  content_type     = "text/x-python"
 }
 ```
 
