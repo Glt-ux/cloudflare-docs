@@ -16,6 +16,8 @@ import {
 	Plan,
 	RelatedProduct,
 	Render,
+	CardGrid,
+	LinkTitleCard
 } from "~/components";
 
 <Description>
@@ -34,61 +36,19 @@ Turnstile can be embedded into any website without sending traffic through Cloud
 
 Turnstile adapts the challenge outcome to the individual visitor or browser. First, we run a series of small non-interactive JavaScript challenges to gather signals about the visitor or browser environment. 
 
-These challenges include: proof-of-work, proof-of-space, probing for web APIs, and various other challenges for detecting browser-quirks and human behavior. As a result, we can fine-tune the difficulty of the challenge to the specific request and avoid showing a visual or interactive puzzle to a user. 
+These challenges include proof-of-work, proof-of-space, probing for web APIs, and various other challenges for detecting browser-quirks and human behavior. As a result, we can fine-tune the difficulty of the challenge to the specific request and avoid showing a visual or interactive puzzle to a user. 
 
-## Widget types
+:::note
+For detailed information on Turnstile's data privacy practices, refer to the [Turnstile Privacy Addendum](https://www.cloudflare.com/turnstile-privacy-policy/).
+:::
+
+### Widget types
 
 Turnstile [widget types](/turnstile/concepts/widgets/) include:
 
 - **Non-interactive**: Visitors never need to interact with the widget.
 - **Managed**: Visitors are presented with an interactive checkbox if they are a suspected bot.
 - **Invisible**: The widget is completely hidden from the visitor.
-
----
-## Key benefits
-
-### Privacy-first design
-
-For detailed information on Turnstile's data privacy practices, refer to the [Turnstile Privacy Addendum](https://www.cloudflare.com/turnstile-privacy-policy/).
-
-### Accessibility and compliance
-
-Turnstile is WCAG 2.1 AA compliant, providing an accessible experience for all users. 
-
-### Easy integration
-
-Cloudflare Turnstile can be easily embedded into any website without having to send traffic through the Cloudflare network. 
-
-### Better user experience
-
-Turnstile can verify that your users are human, all without showing them a puzzle.
-
----
-
-## Availability
-
-Refer to [Plans](/turnstile/plans/) for more information on Turnstile's availability.
-
----
-
-## Get started
-
-{" "}
-<LinkButton variant="primary" href="/turnstile/plans/">
-	Plans
-</LinkButton> <LinkButton 
-	variant="primary" 
-	href="/turnstile/get-started/"
->
-	Get started
-</LinkButton> <LinkButton variant="secondary" href="/turnstile/migration/">
-	Migration guides
-</LinkButton> <LinkButton
-	variant="secondary"
-	href="https://dash.cloudflare.com/?to=/:account/turnstile"
->
-	Dashboard
-</LinkButton>
 
 ---
 
@@ -120,3 +80,14 @@ Refer to [Plans](/turnstile/plans/) for more information on Turnstile's availabi
 	Get automatic protection from vulnerabilities and the flexibility to create
 	custom rules.
 </RelatedProduct>
+
+---
+
+## More resources
+
+<CardGrid>
+<LinkTitleCard title="Plans" href="/turnstile/plans/" icon="document">
+
+Learn more about Turnstile's plan availability.
+</LinkTitleCard>
+</CardGrid>

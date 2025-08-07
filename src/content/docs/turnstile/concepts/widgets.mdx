@@ -1,8 +1,11 @@
 ---
 title: Turnstile widgets
-pcx_content_type: reference
+pcx_content_type: concept
 sidebar:
   order: 1
+head:
+  - tag: title
+    content: Overview
 ---
 
 import { GlossaryTooltip, Render } from "~/components"
@@ -11,10 +14,7 @@ Every instance of Turnstile belongs to a Turnstile widget. It is configured on a
 
 ## Widget components
 
-- **Sitekey**: Public key used to invoke the Turnstile widget on your site
-- **Secret key**: Private key used for server-side verification (keep secure)
-
-Each widget gets its own unique sitekey and secret key pair.
+<Render file="widget-components" />
 
 ## Widget modes
 
@@ -24,19 +24,19 @@ The available modes for Turnstile widgets are **Managed**, **Non-Interactive**, 
 
 Managed mode is fully managed by Cloudflare. It automatically chooses the appropriate action based on client-side signals and risk levels. Cloudflare uses the information from the visitor to decide if an interactive challenge should be used.
 
-Turnstile will only require interaction if a further check is necessary to verify that the visitor is human. When an interaction is required, the user will be prompted to select a box. There will be no images or text to decipher.
+Turnstile will only require interaction if a further check is necessary to verify that the visitor is human. When an interaction is required, the visitor will be prompted to select a box. There will be no images or text to decipher.
 
 Managed mode is ideal for users who want a simple configuration without needing to fine-tune the widget's behavior.
 
 ### Non-Interactive mode
 
-Visitors will see a widget with a loading bar while the challenges run in their browsers. Unlike managed mode, visitors will never be required or prompted to interact with the widget.
+Visitors will see a widget with a loading spinner while the challenges run in their browsers. Unlike managed mode, visitors will never be required or prompted to interact with the widget.
 
 Non-Interactive mode is ideal for users who want to prioritize visitor experience and do not want to add any friction on their website with a Turnstile interaction.
 
 ### Invisible mode
 
-Invisible mode is similar to non-interactive mode where visitors will never interact with the Turnstile widget. Visitors will also not see a widget or any indication that an invisible browser challenge is in progress.
+Invisible mode is similar to Non-Interactive mode where visitors will never interact with the Turnstile widget. Visitors will also not see a widget or any indication that an invisible browser challenge is in progress.
 
 Invisible mode is ideal for users who want to prioritize visitor and visual experience on their website.
 
@@ -60,9 +60,9 @@ Turnstile widgets support multiple appearance modes and themes to match your web
 
 ### Normal operation states
 
-- **Loading**: Widget is processing the challenge
-- **Interactive**: User needs to check the box (Managed mode only)
-- **Success**: Challenge completed successfully
+- **Loading**: Widget is processing the challenge.
+- **Interaction**: Visitor needs to check the box (Managed mode only).
+- **Success**: The Challenge was completed successfully.
 
 ### Error states
 
@@ -80,4 +80,6 @@ When the verification was completed but no further action has been taken, the ch
 
 #### Outdated or unsupported browser
 
-Visitors with outdated browsers or unsupported browsers will encounter this widget state. Refer to [Supported browsers](/cloudflare-challenges/#browser-support) for more information regarding supported browsers.
+Visitors with outdated browsers or unsupported browsers will encounter this widget state. 
+
+Refer to [Supported browsers](/cloudflare-challenges/#browser-support) for more information regarding supported browsers.

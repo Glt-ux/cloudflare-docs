@@ -14,17 +14,17 @@ Learn how to add the Turnstile widget to your webpage using implicit or explicit
 Before you begin, you must have:
 
 - A Cloudflare account
-- [Created A Turnstile widget](/turnstile/get-started/#1-create-your-widget) and obtained a sitekey
+- [A Turnstile widget](/turnstile/get-started/#1-create-your-widget) with a sitekey
 - Access to edit your website's HTML
 - Basic knowledge of HTML and JavaScript
 
 ## Process
 
-1. **Page load**: The Turnstile script loads and scans for elements or waits for programmatic calls.
-2. **Widget rendering**: Widgets are created and begin running challenges.
-3. **Token generation**: When a challenge is completed, a token is generated. 
-4. **Form integration**: The token is made available via callbacks or hidden form fields.
-5. **Server validation**: Your server receives the token and validates it using the Siteverify API.
+1. Page load: The Turnstile script loads and scans for elements or waits for programmatic calls.
+2. Widget rendering: Widgets are created and begin running challenges.
+3. Token generation: When a challenge is completed, a token is generated. 
+4. Form integration: The token is made available via callbacks or hidden form fields.
+5. Server validation: Your server receives the token and validates it using the Siteverify API.
 
 ## Implicit rendering
 
@@ -34,10 +34,10 @@ Implicit rendering automatically scans your HTML for elements with the `cf-turns
 
 Cloudflare recommends using implicit rendering on the following scenarios:
 
-- If you have simple implementations and want a quick integration
-- If you have static websites with straightforward forms
-- If you want widgets to appear immediately on pageload
-- If you do not need programmatic control of the widget
+- You have simple implementations and want a quick integration.
+- You have static websites with straightforward forms.
+- You want widgets to appear immediately on pageload.
+- You do not need programmatic control of the widget.
 
 ### Implementation
 
@@ -185,11 +185,11 @@ Explicit rendering gives you programmatic control over when and how widgets are 
 
 Cloudflare recommends using explicit rendering on the following scenarios:
 
-- If you have dynamic websites and single-page applications (SPAs)
-- If you need to control the timing of widget creation
-- If you want to conditionally render the widget based on visitor interactions
-- If you want multiple widgets with different configurations
-- If you have complex applications requiring widget lifecycle management
+- You have dynamic websites and single-page applications (SPAs).
+- You need to control the timing of widget creation.
+- You want to conditionally render the widget based on visitor interactions.
+- You want multiple widgets with different configurations.
+- You have complex applications requiring widget lifecycle management.
 
 ### Implementation
 
@@ -209,7 +209,7 @@ Create containers without the `cf-turnstile` class.
 
 #### 3. Render the widgets programmatically
 
-Call `turnstile.render() when you are ready to create the widget.
+Call `turnstile.render()` when you are ready to create the widget.
 
 ```js
 const widgetId = turnstile.render('#turnstile-container', {
@@ -402,7 +402,7 @@ Both implicit and explicit rendering methods support the same configuration opti
 | `size` | Widget size | `normal`, `flexible`, `compact` |
 | `callback` | Success callback | Function |
 | `error-callback` | Error callback | Function |
-| `execution` | WHen to run the challenge | `render`, `execute` |
+| `execution` | When to run the challenge | `render`, `execute` |
 | `appearance` | When the widget is visible | `always`, `execute`, `interaction-only` |
 
 For a complete list of configuration options, refer to [Widget configurations](/turnstile/get-started/client-side-rendering/widget-configurations/).

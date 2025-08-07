@@ -24,23 +24,19 @@ Before you begin, you must have:
 
 Turnstile widgets are the foundation of your bot protection implementation. 
 
-Every widget has:
-
-  - **Sitekey**: Public identifier used in your webpage code
-  - **Secret Key**: Private key used for server-side validation
-  - **Configuration**: Mode, hostnames, appearance settings, and other options
+<Render file="widget-components" />
 
 :::note[Important]
 Regardless of how you create and manage your widgets, you will still need to [embed the widget](/turnstile/get-started/client-side-rendering/) on your webpage and [validate the token](/turnstile/get-started/server-side-validation/) on your server.
 :::
 
-Implementing Turnstile involves two essential components that work together:
+Implementing Turnstile involves two essential components that work together.
 
-1. **Client-side**: [Embed the widget](/turnstile/get-started/client-side-rendering/)
+1. Client-side: [Embed the widget](/turnstile/get-started/client-side-rendering/)
 
     Add the Turnstile widget to your webpage to challenge visitors and generate verification tokens.
 
-2. **Server-side**: [Validate the token](/turnstile/get-started/server-side-validation/)
+2. Server-side: [Validate the token](/turnstile/get-started/server-side-validation/)
 
     Verify the tokens on your server using the Siteverify API to ensure they are authentic and have not been tampered with.
 
@@ -98,14 +94,14 @@ Refer to [Migration](/turnstile/migration/) for step-by-step migration guidance 
 
 ### Security
 
-- **Protect secret keys**: Never expose secret keys in client-side code.
-- **Rotate keys regularly**: Use API or dashboard to rotate secret keys periodically.
-- **Restrict hostnames**: Only allow widgets on domains you control.
-- **Monitor usage**: Use analytics to detect unusual patterns.
+- Protect your secret keys. Never expose secret keys in client-side code.
+- Rotate your keys regularly. Use API or dashboard to rotate secret keys periodically.
+- Restrict your hostnames. Only allow widgets on domains that you control.
+- Monitor the usage. Use analytics to detect unusual patterns.
 
 ### Operational
 
-- **Use descriptive names**: Name widgets based on their purpose, such as "Login Form" or "Contact Page".
-- **Environment separation**: Use different widgets for development, staging, and production.
-- **Documentation**: Keep track of which widgets are used at which locations.
-- **Backup configuration**: Store widget configurations in version control when using Terraform.
+- Use descriptive names. Name widgets based on their purpose, such as "Login Form" or "Contact Page".
+- Separate your environments. Use different widgets for development, staging, and production.
+- Keep track of which widgets are used at which locations.
+- Store your widget configurations in version control when using Terraform.

@@ -20,11 +20,11 @@ Client-side verification alone leaves major security vulnerabilities.
 
 ## Process
 
-1. **Client generates token**: User completes Turnstile challenge on your webpage.
-2. **Token sent to server**: Form submission includes the Turnstile token.
-3. **Server validates token**: Your server calls Cloudflare's Siteverify API.
-4. **Cloudflare responds**: Returns success/failure and additional data
-5. **Server takes action**: Allow or reject the original request based on validation.
+1. Client generates token: Visitor completes Turnstile challenge on your webpage.
+2. Token sent to server: Form submission includes the Turnstile token.
+3. Server validates token: Your server calls Cloudflare's Siteverify API.
+4. Cloudflare responds: Returns `success` or `failure` and additional data.
+5. Server takes action: Allow or reject the original request based on validation.
 
 ## Siteverify API overview
 
@@ -47,10 +47,10 @@ The API accepts both `application/x-www-form-urlencoded` and `application/json` 
 
 #### Token characteristics
 
-- **Maximum length**: 2048 characters
-- **Validity period**: 300 seconds (5 minutes) from generation
-- **Single use**: Each token can only be validated once
-- **Automatic expiry**: Tokens automatically expire and cannot be reused
+- Maximum length: 2048 characters
+- Validity period: 300 seconds (5 minutes) from generation
+- Single use: Each token can only be validated once
+- Automatic expiry: Tokens automatically expire and cannot be reused
 
 ---
 
@@ -647,22 +647,22 @@ if (result.success) {
 
 ### Security
 
-- **Store secret keys securely**: Use environment variables or secure key management.
-- **Validate the token on every request**: Never trust client-side validation alone.
-- **Check additional fields**: Validate the action and hostname when specified.
-- **Monitor for abuse**: Log failed validations and unusual patterns.
-- **Use HTTPS**: Always validate over secure connections.
+- Store your secret keys securely. Use environment variables or secure key management.
+- Validate the token on every request. Never trust client-side validation alone.
+- Check additional fields. Validate the action and hostname when specified.
+- Monitor for abuse and log failed validations and unusual patterns.
+- Use HTTPS. Always validate over secure connections.
 
 ### Performance
 
-- **Set reasonable timeouts**: Do not wait indefinitely for Siteverify responses.
-- Implement retry logic**: Handle temporary network issues.
-- **Cache validation results**: Cache validation results for the same token, if needed for your flow.
-- **Monitor API latency**: Track Siteverify response times.
+- Set reasonable timeouts. Do not wait indefinitely for Siteverify responses.
+- Implement retry logic and handle temporary network issues.
+- Cache validation results for the same token, if it is needed for your flow.
+- Monitor your API latency. Track the Siteverify response time.
 
 ### Error handling
 
-- **Degreadation**: Have fallback behavior for API failures.
-- **User-friendly messaging**: Do not expose internal error details to users.
-- **Proper logging**: Log errors for debugging without exposing secrets.
-- **Rate limit**: Protect against validation flooding.
+- Have fallback behavior for API failures.
+- Use user-friendly messaging. Do not expose internal error details to users.
+- Properly log errors for debugging without exposing secrets.
+- Rate limit to protect against validation flooding.
