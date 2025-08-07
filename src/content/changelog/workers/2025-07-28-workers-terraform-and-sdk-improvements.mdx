@@ -109,12 +109,12 @@ const scriptContent = `
 client.workers.scripts.versions.create('my-worker', {
   account_id: '123456789',
   metadata: {
-    main_module: 'my-script',
+    main_module: 'my-worker.js',
   },
   files: [
     await toFile(
       Buffer.from(scriptContent),
-      'my-script',
+      'my-worker.js',
       {
         type: "application/javascript+module",
       }
