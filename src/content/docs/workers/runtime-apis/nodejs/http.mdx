@@ -7,15 +7,39 @@ import { Render } from "~/components"
 
 <Render file="nodejs-compat-howto" />
 
+## Compatibility flags
+
+### Client-side methods
+
+To use the HTTP client-side methods (`http.get`, `http.request`, etc.), you must enable the [`enable_nodejs_http_modules`](/workers/configuration/compatibility-flags/) compatibility flag in addition to the [`nodejs_compat`](/workers/runtime-apis/nodejs/) flag.
+
+This flag is automatically enabled for Workers using a [compatibility date](/workers/configuration/compatibility-dates/) of `2025-08-15` or later when `nodejs_compat` is enabled. For Workers using an earlier compatibility date, you can manually enable it by adding the flag to your `wrangler.toml`:
+
+```toml
+compatibility_flags = ["nodejs_compat", "enable_nodejs_http_modules"]
+```
+
+### Server-side methods
+
+To use the HTTP server-side methods (`http.createServer`, `http.Server`, `http.ServerResponse`), you must enable the `enable_nodejs_http_server_modules` compatibility flag in addition to the [`nodejs_compat`](/workers/runtime-apis/nodejs/) flag.
+
+This flag is automatically enabled for Workers using a [compatibility date](/workers/configuration/compatibility-dates/) of `2025-09-01` or later when `nodejs_compat` is enabled. For Workers using an earlier compatibility date, you can manually enable it by adding the flag to your `wrangler.toml`:
+
+```toml
+compatibility_flags = ["nodejs_compat", "enable_nodejs_http_server_modules"]
+```
+
+To use both client-side and server-side methods, enable both flags:
+
+```toml
+compatibility_flags = ["nodejs_compat", "enable_nodejs_http_modules", "enable_nodejs_http_server_modules"]
+```
+
 ## Agent
 
-An implementation of the Node.js [`http.Agent'](https://nodejs.org/docs/latest/api/http.html#class-httpagent) class.
+An implementation of the Node.js [`http.Agent`](https://nodejs.org/docs/latest/api/http.html#class-httpagent) class.
 
-An [Agent](https://nodejs.org/docs/latest/api/http.html#class-httpagent) manages HTTP connection reuse by maintaining request queues per host/port. In the
-workers environment, however, such low-level management of the network connection, ports,
-etc, is not relevant because it is handled by the Cloudflare infrastructure instead. Accordingly, the
-implementation of `Agent` in Workers is a stub implementation that does not support connection
-pooling or keep-alive.
+An [Agent](https://nodejs.org/docs/latest/api/http.html#class-httpagent) manages HTTP connection reuse by maintaining request queues per host/port. In the Workers environment, however, such low-level management of the network connection, ports, etc, is not relevant because it is handled by the Cloudflare infrastructure instead. Accordingly, the implementation of `Agent` in Workers is a stub implementation that does not support connection pooling or keep-alive.
 
 ```js
 import { Agent } from 'node:http';
@@ -51,13 +75,13 @@ get('http://docs.cloudflare.com/robots.txt', (res) => {
 
 ## request
 
-An implementation of the Node.js [`http.request'](https://nodejs.org/docs/latest/api/http.html#httprequesturl-options-callback) method.
+An implementation of the Node.js [`http.request`](https://nodejs.org/docs/latest/api/http.html#httprequesturl-options-callback) method.
 
 The `request` method creates an HTTP request with customizable options like method, headers, and body. It provides full control over the request configuration and returns a [writable stream](https://nodejs.org/docs/latest/api/stream.html#class-streamwritable) for sending request data.
 
 ```js
 import { request } from 'node:http';
-import { strictEqual } from 'node:assert';
+import { strictEqual, ok } from 'node:assert';
 
 const req = request({
 	method: 'GET',
@@ -81,7 +105,10 @@ req.end();
 ```
 
 ```js
-const req = request(new URL('http://docs.cloudflare.com'),{
+import { request } from 'node:http';
+import { strictEqual } from 'node:assert';
+
+const req = request(new URL('http://docs.cloudflare.com'), {
 	method: 'GET',
 }, (res) => {
 	// requests to http://docs.cloudflare.com get redirected to their https counterpart.
@@ -91,7 +118,7 @@ const req = request(new URL('http://docs.cloudflare.com'),{
 req.end();
 ```
 
-The following options passed to the `request` method are not supported due to the differences in the Cloudflare Workers and the implementation of the `node:http` module:
+The following options passed to the `request` method are not supported due to differences in the Cloudflare Workers implementation of the `node:http` module:
 - `maxHeaderSize`
 - `insecureHTTPParser`
 - `createConnection`
@@ -100,7 +127,9 @@ The following options passed to the `request` method are not supported due to th
 
 ## OutgoingMessage
 
-The [`OutgoingMessage`](https://nodejs.org/docs/latest/api/http.html#class-httpoutgoingmessage) class represents an HTTP response that is sent to the client. It provides methods for writing response headers and body, as well as for ending the response. `OutgoingMessage` extends from the [`Writable` stream class](https://nodejs.org/docs/latest/api/stream.html#class-streamwritable).
+An implementation of the Node.js [`http.OutgoingMessage`](https://nodejs.org/docs/latest/api/http.html#class-httpoutgoingmessage) class.
+
+The `OutgoingMessage` class is a base class for outgoing HTTP messages (both requests and responses). It provides methods for writing headers and body data, as well as for ending the message. `OutgoingMessage` extends from the [`Writable` stream class](https://nodejs.org/docs/latest/api/stream.html#class-streamwritable).
 
 ```js
 import { OutgoingMessage } from 'node:http';
@@ -110,9 +139,12 @@ res.writeHead(200, { 'Content-Type': 'text/plain' });
 res.write('Hello, World!');
 res.end();
 ```
+
 ## IncomingMessage
 
-The `IncomingMessage` class represents an HTTP request that is received from the client. It provides methods for reading request headers and body, as well as for ending the request. `IncomingMessage` extends from the `Readable` stream class.
+An implementation of the Node.js [`http.IncomingMessage`](https://nodejs.org/docs/latest/api/http.html#class-httpincomingmessage) class.
+
+The `IncomingMessage` class represents an HTTP message (request or response). It provides methods for reading headers and body data. `IncomingMessage` extends from the `Readable` stream class.
 
 ```js
 import { get, IncomingMessage } from 'node:http';
@@ -123,3 +155,135 @@ get('http://docs.cloudflare.com', (res) => {
 	ok(res instanceof IncomingMessage);
 });
 ```
+
+The Workers implementation includes a `cloudflare` property on `IncomingMessage` objects:
+
+```js
+import { get } from 'node:http';
+
+get('http://example.com', (res) => {
+	// Access Cloudflare-specific request properties
+	console.log(res.cloudflare.cf.country);
+	console.log(res.cloudflare.cf.ray);
+});
+```
+
+The `cloudflare.cf` property contains [Cloudflare-specific request properties](/workers/runtime-apis/request/#incomingrequestcfproperties).
+
+The following differences exist between the Workers implementation and Node.js:
+
+- Trailer headers are not supported
+- The `socket` attribute only contains the following properties: `encrypted`, `remoteFamily`, `remoteAddress`, `remotePort`, `localAddress`, `localPort`, and `destroy()` method
+- The `socket` attribute does not extend from `net.Socket`
+
+## createServer
+
+An implementation of the Node.js [`http.createServer`](https://nodejs.org/docs/latest/api/http.html#httpcreateserveroptions-requestlistener) method.
+
+The `createServer` method creates an HTTP server instance that can handle incoming requests. It's a convenience function that creates a new `Server` instance and optionally sets up a request listener callback.
+
+```js
+import { createServer } from 'node:http';
+import { httpServerHandler } from 'cloudflare:node';
+
+const server = createServer((req, res) => {
+	res.writeHead(200, { 'Content-Type': 'text/plain' });
+	res.end('Hello from Node.js HTTP server!');
+});
+
+server.listen(8080);
+export default httpServerHandler({ port: 8080 });
+```
+
+The `httpServerHandler` function integrates Node.js HTTP servers with the Cloudflare Workers request model. When a request arrives at your Worker, the handler automatically routes it to your Node.js server running on the specified port. This bridge allows you to use familiar Node.js server patterns while benefiting from the Workers runtime environment, including automatic scaling, edge deployment, and integration with other Cloudflare services.
+
+:::note
+Failing to call `close()` on an HTTP server may result in the server being leaked. To prevent this, call `close()` when you're done with the server, or use explicit resource management:
+
+```js
+import { createServer } from 'node:http';
+
+await using server = createServer((req, res) => {
+	res.end('Hello World');
+});
+// Server will be automatically closed when it goes out of scope
+```
+:::
+
+## Server
+
+An implementation of the Node.js [`http.Server`](https://nodejs.org/docs/latest/api/http.html#class-httpserver) class.
+
+The `Server` class represents an HTTP server and provides methods for handling incoming requests. It extends the Node.js `EventEmitter` class and can be used to create custom server implementations.
+
+When using `httpServerHandler`, the port number specified in `server.listen()` acts as a routing key rather than an actual network port. The handler uses this port to determine which HTTP server instance should handle incoming requests, allowing multiple servers to coexist within the same Worker by using different port numbers for identification.
+
+```js
+import { Server } from 'node:http';
+import { httpServerHandler } from 'cloudflare:node';
+
+const server = new Server((req, res) => {
+	res.writeHead(200, { 'Content-Type': 'application/json' });
+	res.end(JSON.stringify({ message: 'Hello from HTTP Server!' }));
+});
+
+server.listen(8080);
+export default httpServerHandler({ port: 8080 });
+```
+
+The following differences exist between the Workers implementation and Node.js:
+
+- Connection management methods such as `closeAllConnections()` and `closeIdleConnections()` are not implemented
+- Only `listen()` variants with a port number or no parameters are supported: `listen()`, `listen(0, callback)`, `listen(callback)`, etc.
+- The following server options are not supported: `maxHeaderSize`, `insecureHTTPParser`, `keepAliveTimeout`, `connectionsCheckingInterval`
+
+## ServerResponse
+
+An implementation of the Node.js [`http.ServerResponse`](https://nodejs.org/docs/latest/api/http.html#class-httpserverresponse) class.
+
+The `ServerResponse` class represents the server-side response object that is passed to request handlers. It provides methods for writing response headers and body data, and extends the Node.js `Writable` stream class.
+
+```js
+import { createServer, ServerResponse } from 'node:http';
+import { ok } from 'node:assert';
+
+const server = createServer((req, res) => {
+	ok(res instanceof ServerResponse);
+	res.statusCode = 200;
+	res.setHeader('Content-Type', 'text/html');
+	res.write('<h1>Hello World</h1>');
+	res.end();
+});
+```
+
+```js
+import { createServer } from 'node:http';
+import { httpServerHandler } from 'cloudflare:node';
+
+const server = createServer((req, res) => {
+	// Set multiple headers at once
+	res.writeHead(200, {
+		'Content-Type': 'application/json',
+		'X-Custom-Header': 'Workers-HTTP'
+	});
+
+	// Stream response data
+	res.write('{"data": [');
+	res.write('{"id": 1, "name": "Item 1"},');
+	res.write('{"id": 2, "name": "Item 2"}');
+	res.write(']}');
+
+	// End the response
+	res.end();
+});
+
+server.listen(8080);
+export default httpServerHandler({ port: 8080 });
+```
+
+The following methods and features are not supported in the Workers implementation:
+
+- `assignSocket()` and `detachSocket()` methods are not available
+- Trailer headers are not supported
+- `writeContinue()` and `writeEarlyHints()` methods are not available
+- 1xx responses in general are not supported
