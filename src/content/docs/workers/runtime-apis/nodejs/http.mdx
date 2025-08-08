@@ -173,8 +173,7 @@ The `cloudflare.cf` property contains [Cloudflare-specific request properties](/
 The following differences exist between the Workers implementation and Node.js:
 
 - Trailer headers are not supported
-- The `socket` attribute only contains the following properties: `encrypted`, `remoteFamily`, `remoteAddress`, `remotePort`, `localAddress`, `localPort`, and `destroy()` method
-- The `socket` attribute does not extend from `net.Socket`
+- The `socket` attribute **does not extend from `net.Socket`** and only contains the following properties: `encrypted`, `remoteFamily`, `remoteAddress`, `remotePort`, `localAddress`, `localPort`, and `destroy()` method
 
 ## createServer
 
@@ -198,7 +197,7 @@ export default httpServerHandler({ port: 8080 });
 The `httpServerHandler` function integrates Node.js HTTP servers with the Cloudflare Workers request model. When a request arrives at your Worker, the handler automatically routes it to your Node.js server running on the specified port. This bridge allows you to use familiar Node.js server patterns while benefiting from the Workers runtime environment, including automatic scaling, edge deployment, and integration with other Cloudflare services.
 
 :::note
-Failing to call `close()` on an HTTP server may result in the server being leaked. To prevent this, call `close()` when you're done with the server, or use explicit resource management:
+Failing to call `close()` on an HTTP server may result in the server persisting until the worker is destroyed. In most cases, this is not an issue since servers typically live for the lifetime of the worker. However, if you need to create multiple servers during a worker's lifetime or want explicit lifecycle control (such as in test scenarios), call `close()` when you're done with the server, or use explicit resource management:
 
 ```js
 import { createServer } from 'node:http';
@@ -244,23 +243,12 @@ An implementation of the Node.js [`http.ServerResponse`](https://nodejs.org/docs
 The `ServerResponse` class represents the server-side response object that is passed to request handlers. It provides methods for writing response headers and body data, and extends the Node.js `Writable` stream class.
 
 ```js
-import { createServer, ServerResponse } from 'node:http';
-import { ok } from 'node:assert';
-
-const server = createServer((req, res) => {
-	ok(res instanceof ServerResponse);
-	res.statusCode = 200;
-	res.setHeader('Content-Type', 'text/html');
-	res.write('<h1>Hello World</h1>');
-	res.end();
-});
-```
-
-```js
 import { createServer } from 'node:http';
 import { httpServerHandler } from 'cloudflare:node';
 
 const server = createServer((req, res) => {
+	ok(res instanceof ServerResponse);
+
 	// Set multiple headers at once
 	res.writeHead(200, {
 		'Content-Type': 'application/json',

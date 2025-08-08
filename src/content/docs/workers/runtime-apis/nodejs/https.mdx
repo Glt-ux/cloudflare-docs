@@ -157,11 +157,14 @@ The `Server` class represents an HTTPS server and provides methods for handling 
 
 ```js
 import { Server } from 'node:https';
+import { httpServerHandler } from 'cloudflare:node';
 
 const server = new Server((req, res) => {
 	res.writeHead(200, { 'Content-Type': 'application/json' });
 	res.end(JSON.stringify({ message: 'Hello from HTTPS Server!' }));
 });
+server.listen(8080);
+export default httpServerHandler({ port: 8080 });
 ```
 
 The following differences exist between the Workers implementation and Node.js:
