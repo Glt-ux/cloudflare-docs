@@ -17,7 +17,6 @@ Resolved several issues with the `cloudflare_workers_script` resource that resul
 - Using Durable Objects migrations
 - Using some bindings such as `secret_text`
 - Using smart placement
-- When the API returned array attribute results in different order
 
 A resource should never show a plan diff if there isn't an actual change. This fix reduces unnecessary noise in your Terraform plan and is available in Cloudflare Terraform Provider 5.8.0.
 
