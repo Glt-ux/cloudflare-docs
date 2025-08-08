@@ -5,62 +5,53 @@ sidebar:
   order: 0
 ---
 
-import { MetaInfo, Render, Tabs, TabItem, Type } from "~/components";
+import { MetaInfo, Render, Steps, Tabs, TabItem, Type } from "~/components";
 
 This guide helps you diagnose and resolve common issues with the Cloudflare WARP client. It covers how to troubleshoot the WARP client on desktop operating systems, including Windows, macOS, and Linux.
 
-## Prerequisites
+1. **Before you start**: [Prerequisites](#prequisites), permissions, [version control](#check-your-warp-version) and WARP basics.
+2. **Collect logs**: Through the [dashboard]() (with DEX remote capture) or the [command-line interface](#option-b-collect-logs-via-the-cli) (CLI) (`warp-diag`).
+3. **Review logs**: [Status](#check-warp-status), [settings](#check-warp-settings), [profile ID](#wrong-profile-id), [split tunnel](#wrong-split-tunnel-configuration) configuration.
+4. **Fix common misconfigurations**: Profile mismatch, split tunnel issues, managed network issues.
+5. **File a support ticket**: What to include to solve your issue faster.
 
-To use this guide, you must have completed the [Zero Trust onboarding flow](/cloudflare-one/setup/) with a Zero Trust organizaton created and the WARP client installed on an end user device.
+## 1. Before you start
 
-:::caution[Update WARP before troubleshooting]
+### Prequisites
+
+- You must have completed the [Zero Trust onboarding flow](/cloudflare-one/setup/) with a Zero Trust organizaton created.
+- You must have the WARP client installed on an end user device.
+- You must have a [role](/cloudflare-one/roles-permissions/) that gives admin permission to download logs on the Cloudflare dashboard.
+
+### Check your WARP version
 
 Many troubleshooting issues are caused by outdated client versions. For the best performance and compatibility, administrators should check for new releases and [upgrade the WARP client](/cloudflare-one/connections/connect-devices/warp/download-warp/) before attempting to troubleshoot other issues.
 
 After updating the WARP client, monitor the issue to see if it recurs. If the issue persists, continue with the troubleshooting guide.
 
-:::
-
-## Troubleshooting overview
-
-This guide uses [WARP diagnostic logs](/cloudflare-one/connections/connect-devices/warp/troubleshooting/warp-logs/) to help you verify that your WARP configuration is working as intended.
-
-To troubleshoot if WARP misconfiguration is the source of your issue, you will:
-
-1. Review the WARP basics to familiarize yourself with WARP functionality.
-2. Review the best practice advice and run a remote capture to download WARP diagnostic logs.
-3. Check your WARP diagnostic logs for connection status, profile ID accuracy, and split tunnel configuration accuracy.
-4. Before filing a support ticket, review the support ticket checklist to ensure a fast response to your problem.
-
-## WARP basics
+### WARP basics
 
 Review the WARP client’s architecture, installation paths, and modes to help you diagnose issues with greater accuracy.
 
-### WARP architecture
+#### WARP architecture
 
 <Render file="warp/warp-comprises" />
 
-### WARP installation details
+#### WARP installation details
 
 <Render file="warp/warp-installation-details" />
 
-### WARP modes
+#### WARP modes
 
 WARP operates in several modes, each with different traffic handling capabilities:
 
 <Render file="warp/warp-modes" />
 
-:::tip
+## 2. Collect diagnostic logs
 
-Run `warp-cli settings` to review your device’s current WARP mode and other configured [WARP settings](/cloudflare-one/connections/connect-devices/warp/configure-warp/warp-settings/).
+You can collect diagnostic logs in two ways: the [Cloudflare dashboard](#option-a-collect-logs-via-the-cloudflare-dashboard) or the [`warp-diag`]() command-line interface (CLI).
 
-:::
-
-## 1. Collect diagnostic logs
-
-You can collect diagnostic logs in two ways: the Cloudflare dashboard or the `warp-diag` command-line interface (CLI).
-
-### Collect logs via the Cloudflare dashboard
+### Option A: Collect logs via the Cloudflare dashboard
 
 For WARP client versions higher than `2024.12.492.0`, you can collect diagnostic logs remotely from the Zero Trust dashboard by using Digital Experience Monitoring's (DEX) remote captures.
 
@@ -94,7 +85,7 @@ By following these steps, you will ensure that your WARP diagnostic logs have ca
 
 After you have your diagnostic files, go to [Review diagnostic logs](/cloudflare-one/connections/connect-devices/warp/troubleshooting/troubleshooting-guide/#2-review-diagnostics-logs) to continue troubleshooting.
 
-### Collect logs via the CLI
+### Option B: Collect logs via the CLI
 
 Collect WARP diagnostic logs by downloading them to your desktop using the `warp-diag` CLI.
 
